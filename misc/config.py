@@ -10,7 +10,7 @@ __C = edict()
 cfg = __C
 
 # Dataset name: flowers, birds
-__C.DATASET_NAME = 'birds'
+__C.DATASET_NAME = 'flowers'
 __C.EMBEDDING_TYPE = 'cnn-rnn'
 __C.CONFIG_NAME = ''
 __C.GPU_ID = 0

@@ -3,7 +3,7 @@ from __future__ import print_function
 
 import dateutil
 import dateutil.tz
-import datetime
+# import datetime
 import argparse
 import pprint
 
@@ -22,6 +22,10 @@ def parse_args():
     parser.add_argument('--gpu', dest='gpu_id',
                         help='GPU device id to use [0]',
                         default=-1, type=int)
+    parser.add_argument('--batch_size', dest='batch_size',
+                        default=64, type=int)
+    parser.add_argument('--epoch', dest='epoch',
+                        default=600, type=int)
     # if len(sys.argv) == 1:
     #    parser.print_help()
     #    sys.exit(1)
@@ -34,11 +38,16 @@ if __name__ == "__main__":
         cfg_from_file(args.cfg_file)
     if args.gpu_id != -1:
         cfg.GPU_ID = args.gpu_id
+
+    cfg.CONFIG_NAME = "stageI"
+    cfg.TRAIN.BATCH_SIZE = args.batch_size
+    cfg.TRAIN.MAX_EPOCH = args.epoch
+
     print('Using config:')
     pprint.pprint(cfg)
 
-    now = datetime.datetime.now(dateutil.tz.tzlocal())
-    timestamp = now.strftime('%Y_%m_%d_%H_%M_%S')
+    ## now = datetime.datetime.now(dateutil.tz.tzlocal())
+    ## timestamp = now.strftime('%Y_%m_%d_%H_%M_%S')
 
     datadir = 'Data/%s' % cfg.DATASET_NAME
     dataset = TextDataset(datadir, cfg.EMBEDDING_TYPE, 1)
@@ -48,8 +57,8 @@ if __name__ == "__main__":
         filename_train = '%s/train' % (datadir)
         dataset.train = dataset.get_data(filename_train)
 
-        ckt_logs_dir = "ckt_logs/%s/%s_%s" % \
-            (cfg.DATASET_NAME, cfg.CONFIG_NAME, timestamp)
+        ckt_logs_dir = "ckt_logs/%s/%s" % \
+            (cfg.DATASET_NAME, cfg.CONFIG_NAME)
         mkdir_p(ckt_logs_dir)
     else:
         s_tmp = cfg.TRAIN.PRETRAINED_MODEL

@@ -13,10 +13,3 @@ filenames=${CAPTION_PATH}.t7 \
 gpu=${GPU} \
 th demo/get_embedding.lua
 
-#
-# Generate image from text embeddings
-#
-python demo/demo.py \
---cfg demo/cfg/flowers-demo.yml \
---gpu ${GPU} \
---caption_path ${CAPTION_PATH}.t7

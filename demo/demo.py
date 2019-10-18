@@ -6,7 +6,6 @@ import tensorflow as tf
 import numpy as np
 import scipy.misc
 import os
-import argparse
 import torchfile
 from PIL import Image, ImageDraw, ImageFont
 import re
@@ -14,23 +13,6 @@ import re
 from misc.config import cfg, cfg_from_file
 from misc.utils import mkdir_p
 from stageII.model import CondGAN
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='Train a GAN network')
-    parser.add_argument('--cfg', dest='cfg_file',
-                        help='optional config file',
-                        default=None, type=str)
-    parser.add_argument('--gpu', dest='gpu_id',
-                        help='GPU device id to use [0]',
-                        default=-1, type=int)
-    parser.add_argument('--caption_path', type=str, default=None,
-                        help='Path to the file with text sentences')
-    # if len(sys.argv) == 1:
-    #    parser.print_help()
-    #    sys.exit(1)
-    args = parser.parse_args()
-    return args
 
 
 def sample_encoded_context(embeddings, model, bAugmentation=True):
@@ -161,14 +143,10 @@ def save_super_images(sample_batchs, hr_sample_batchs,
         scipy.misc.imsave(fullpath, superimage)
 
 
-if __name__ == "__main__":
-    args = parse_args()
-    if args.cfg_file is not None:
-        cfg_from_file(args.cfg_file)
-    if args.gpu_id != -1:
-        cfg.GPU_ID = args.gpu_id
-    if args.caption_path is not None:
-        cfg.TEST.CAPTION_PATH = args.caption_path
+def text_to_image():
+    cfg_from_file("demo/cfg/flowers-demo.yml")
+    cfg.GPU_ID = 0
+    cfg.TEST.CAPTION_PATH = "Data/flowers/example_captions.t7"
 
     # Load text embeddings generated from the encoder
     cap_path = cfg.TEST.CAPTION_PATH

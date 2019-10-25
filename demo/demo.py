@@ -6,6 +6,7 @@ import tensorflow as tf
 import numpy as np
 import scipy.misc
 import os
+import argparse
 import torchfile
 from PIL import Image, ImageDraw, ImageFont
 import re
@@ -14,6 +15,15 @@ from misc.config import cfg, cfg_from_file
 from misc.utils import mkdir_p
 from stageII.model import CondGAN
 
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="stackgan detect demo")
+    parser.add_argument("--model_path",
+                       dest="model_path",
+                       type=str,
+                       help="path to model load")
+    args = parser.parse_args()
+    return args
 
 def sample_encoded_context(embeddings, model, bAugmentation=True):
     '''Helper function for init_opt'''
@@ -144,9 +154,11 @@ def save_super_images(sample_batchs, hr_sample_batchs,
 
 
 if __name__ == "__main__":
+    args = parse_args()
     cfg_from_file("demo/cfg/flowers-demo.yml")
     cfg.GPU_ID = 0
     cfg.TEST.CAPTION_PATH = "Data/flowers/example_captions.t7"
+    cfg.TEST.PRETRAINED_MODEL = args.model_path
 
     # Load text embeddings generated from the encoder
     cap_path = cfg.TEST.CAPTION_PATH

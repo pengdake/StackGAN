@@ -11,6 +11,17 @@ from werkzeug import secure_filename
 app = Flask(__name__)
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="stackgan detect api")
+    parser.add_argument("--model_path",
+                        dest="model_path",
+                        help="path to model load",
+                        default=None,
+                        type=str)
+    args = parser.parse_args()
+    return args
+
+
 @app.route('/detect', methods=['POST'])
 def detect():
     # save file to Data/flowers/example_captions.txt
@@ -27,7 +38,7 @@ def detect():
         return o, 500
     # text to image
     print "start create img"
-    s, o = commands.getstatusoutput("python demo/demo.py")   
+    s, o = commands.getstatusoutput("python demo/demo.py --model_path" % MODEL_PATH)   
     if s != 0:
         return o, 500
     # transform img to base64 code
@@ -42,4 +53,10 @@ def detect():
     
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="9000")
+    args = parse_args()
+    if args.model_path is None:
+        print "model path is not set"
+        return
+    else:
+        global MODEL_PATH = args.model_path
+    app.run(host="0.0.0.0", port="80")

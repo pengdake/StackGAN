@@ -31,29 +31,29 @@ def detect():
     example_file = request.files["file"]
     filename = secure_filename(example_file.filename)
     base_path = os.path.dirname(__file__)
-    caption_path = "Data/flowers/example_captions_%s" % uid
+    caption_path = "Data/flowers/example_captions_%s.txt" % uid
     example_file.save(os.path.join(base_path, caption_path))
     print "start txt transform"
     # transform  Data/flowers/example_captions.txt to Data/flowers/example_captions.t7
-    s, o = commands.getstatusoutput("sh demo/flowers_demo.sh %s" % caption_path)
+    s, o = commands.getstatusoutput("sh demo/flowers_demo.sh %s" % caption_path.split(".")[0])
     if s != 0:
         # transfrom failed
-        return o, 500
+        return make_response(o, 400)
     # text to image
     print "start create img"
     s, o = commands.getstatusoutput("python demo/demo.py --model_path %s --uid %s" % (MODEL_PATH, uid))
     if s != 0:
-        return o, 500
+        return make_response(o, 400)
     # transform img to base64 code
     print "start img transform"
     response_data = {}
     response_data["type"] = "img"
-    img_path = "Data/flowers/example_captions/sentence0_%s.jpg" % uid
+    img_path = "Data/flowers/example_captions_%s/sentence0.jpg" % uid
     img = os.path.join(base_path, img_path)
     with open(img, "rb") as f:
         response_data["data"] = base64.b64encode(f.read())
     # return base64 code
-    return json.dumps(response_data), 200
+    return make_response(jsonify(response_data), 200)
     
 
 if __name__ == "__main__":

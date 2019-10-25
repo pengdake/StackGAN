@@ -22,6 +22,10 @@ def parse_args():
                        dest="model_path",
                        type=str,
                        help="path to model load")
+    parser.add_argument("--uid",
+                        dest=uid,
+                        help="part of image_name",
+                        type=str)
     args = parser.parse_args()
     return args
 
@@ -148,7 +152,7 @@ def save_super_images(sample_batchs, hr_sample_batchs,
         superimage =\
             np.concatenate([top_padding, superimage], axis=0)
 
-        fullpath = '%s/sentence%d.jpg' % (save_dir, startID + j)
+        fullpath = '%s/sentence%d_%s.jpg' % (save_dir, startID + j, UID)
         superimage = drawCaption(np.uint8(superimage), captions_batch[j])
         scipy.misc.imsave(fullpath, superimage)
 
@@ -157,7 +161,8 @@ if __name__ == "__main__":
     args = parse_args()
     cfg_from_file("demo/cfg/flowers-demo.yml")
     cfg.GPU_ID = 0
-    cfg.TEST.CAPTION_PATH = "Data/flowers/example_captions.t7"
+    UID = args.uid
+    cfg.TEST.CAPTION_PATH = "Data/flowers/example_captions_%s.t7" % UID
     cfg.TEST.PRETRAINED_MODEL = args.model_path
 
     # Load text embeddings generated from the encoder

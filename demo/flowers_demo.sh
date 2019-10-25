@@ -1,8 +1,9 @@
 #
 # Extract text embeddings from the encoder
 #
+
 FLOWER_ENCODER=lm_sje_flowers_c10_hybrid_0.00070_1_10_trainvalids.txt_iter16400.t7 \
-CAPTION_PATH=Data/flowers/example_captions \
+CAPTION_PATH=$1 \
 GPU=0 \
 
 export CUDA_VISIBLE_DEVICES=${GPU}

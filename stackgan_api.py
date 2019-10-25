@@ -6,7 +6,6 @@ sys.path.append(os.getcwd())
 import base64
 from flask import Flask, request
 from werkzeug import secure_filename
-from demo.demo import text_to_image 
 
 
 app = Flask(__name__)
@@ -28,7 +27,9 @@ def detect():
         return o, 500
     # text to image
     print "start create img"
-    text_to_image()
+    s, o = commands.getstatusoutput("python demo/demo.py")   
+    if s != 0:
+        return o, 500
     # transform img to base64 code
     print "start img transform"
     response_data = {}

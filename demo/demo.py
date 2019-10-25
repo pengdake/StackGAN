@@ -143,7 +143,7 @@ def save_super_images(sample_batchs, hr_sample_batchs,
         scipy.misc.imsave(fullpath, superimage)
 
 
-def text_to_image():
+if __name__ == "__main__":
     cfg_from_file("demo/cfg/flowers-demo.yml")
     cfg.GPU_ID = 0
     cfg.TEST.CAPTION_PATH = "Data/flowers/example_captions.t7"

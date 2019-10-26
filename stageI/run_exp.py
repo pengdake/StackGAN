@@ -57,6 +57,9 @@ if __name__ == "__main__":
         ckt_logs_dir = "ckt_logs/%s/%s" % \
             (cfg.DATASET_NAME, cfg.CONFIG_NAME)
         mkdir_p(ckt_logs_dir)
+        models_dir = "models/%s/%s" % \
+            (cfg.DATASET_NAME, cfg.CONFIG_NAME)
+        mkdir_p(models_dir)
     else:
         s_tmp = cfg.TRAIN.PRETRAINED_MODEL
         ckt_logs_dir = s_tmp[:s_tmp.find('.ckpt')]
@@ -68,7 +71,8 @@ if __name__ == "__main__":
     algo = CondGANTrainer(
         model=model,
         dataset=dataset,
-        ckt_logs_dir=ckt_logs_dir
+        ckt_logs_dir=ckt_logs_dir,
+        models_dir=models_dir
     )
     if cfg.TRAIN.FLAG:
         algo.train()

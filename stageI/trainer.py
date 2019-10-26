@@ -28,6 +28,7 @@ def KL_loss(mu, log_sigma):
 class CondGANTrainer(object):
     def __init__(self,
                  model,
+                 models_dir,
                  dataset=None,
                  exp_name="model",
                  ckt_logs_dir="ckt_logs",
@@ -39,7 +40,7 @@ class CondGANTrainer(object):
         self.dataset = dataset
         self.exp_name = exp_name
         self.log_dir = ckt_logs_dir
-        self.checkpoint_dir = ckt_logs_dir
+        self.checkpoint_dir = models_dir
 
         self.batch_size = cfg.TRAIN.BATCH_SIZE
         self.max_epoch = cfg.TRAIN.MAX_EPOCH
@@ -369,10 +370,9 @@ class CondGANTrainer(object):
                         # save checkpoint
                         counter += 1
                         if counter % self.snapshot_interval == 0:
-                            snapshot_path = "%s/%s_%s.ckpt" %\
+                            snapshot_path = "%s/%s.ckpt" %\
                                              (self.checkpoint_dir,
-                                              self.exp_name,
-                                              str(counter))
+                                              self.exp_name)
                             fn = saver.save(sess, snapshot_path)
                             print("Model saved in file: %s" % fn)
 

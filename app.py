@@ -7,10 +7,11 @@ import sys
 import base64
 from flask import Flask, request, jsonify, make_response
 from werkzeug import secure_filename
+from werkzeug.contrib.cache import SimpleCache
 sys.path.append(os.getcwd())
 
+cache = SimpleCache()
 app = Flask(__name__)
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description="stackgan detect api")
@@ -25,6 +26,9 @@ def parse_args():
 
 @app.route('/model_app/stackgan/detect', methods=['POST'])
 def detect():
+    if cache.get("training") == "true":
+        return make_response("server is busy, train again later", 400)
+    cache.set("training", "true")
     uid = uuid.uuid1()
     # save file to Data/flowers/example_captions.txt
     print "start save txt"
@@ -44,6 +48,7 @@ def detect():
     s, o = commands.getstatusoutput("python demo/demo.py --model_path %s --uid %s" % (MODEL_PATH, uid))
     if s != 0:
         return make_response(o, 400)
+    cache.set("training", "false")
     # transform img to base64 code
     print "start img transform"
     response_data = {}
@@ -63,4 +68,5 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         MODEL_PATH = args.model_path
+    cache.set("training", "false")
     app.run(host="0.0.0.0", port="80")

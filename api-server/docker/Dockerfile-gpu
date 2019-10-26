@@ -1,0 +1,19 @@
+FROM tensorflow/tensorflow:0.12.1-gpu
+
+WORKDIR /root
+
+COPY install.sh /root/
+
+RUN mv /etc/apt/sources.list.d/cuda.list /etc/apt/sources.list.d/cuda.list.bak
+RUN apt-get update
+RUN apt-get install -y git wget ttf-freefont tmux
+
+
+RUN pip install prettytensor==0.7.3 progressbar python-dateutil easydict pandas torchfile pillow pyyaml ipdb numpy==1.11.3
+
+
+RUN git clone https://github.com/torch/distro.git /root/torch --recursive && \
+    cd /root/torch && \
+    mv /root/install.sh . && \
+    ./install-deps && \
+    ./install.sh

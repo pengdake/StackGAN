@@ -6,7 +6,6 @@ import argparse
 import sys
 import base64
 from flask import Flask, request, jsonify, make_response
-from werkzeug import secure_filename
 from werkzeug.contrib.cache import SimpleCache
 sys.path.append(os.getcwd())
 
@@ -33,19 +32,17 @@ def detect():
     # save file to Data/flowers/example_captions.txt
     print "start save txt"
     example_file = request.files["file"]
-    filename = secure_filename(example_file.filename)
-    base_path = os.path.dirname(__file__)
-    caption_path = "Data/flowers/example_captions_%s.txt" % uid
-    example_file.save(os.path.join(base_path, caption_path))
+    caption_path = "/mxtg/code/StackGAN/Data/flowers/example_captions_%s.txt" % uid
+    example_file.save(caption_path)
     print "start txt transform"
     # transform  Data/flowers/example_captions.txt to Data/flowers/example_captions.t7
-    s, o = commands.getstatusoutput("sh demo/flowers_demo.sh %s" % caption_path.split(".")[0])
+    s, o = commands.getstatusoutput("sh /mxtg/code/StackGAN/demo/flowers_demo.sh %s" % caption_path.split(".")[0])
     if s != 0:
         # transfrom failed
         return make_response(o, 400)
     # text to image
     print "start create img"
-    s, o = commands.getstatusoutput("python demo/demo.py --model_path %s --uid %s" % (MODEL_PATH, uid))
+    s, o = commands.getstatusoutput("python /mxtg/code/StackGAN/demo/demo.py --model_path %s --uid %s" % (MODEL_PATH, uid))
     if s != 0:
         return make_response(o, 400)
     cache.set("training", "false")
@@ -53,7 +50,7 @@ def detect():
     print "start img transform"
     response_data = {}
     response_data["type"] = "img"
-    img_path = "Data/flowers/example_captions_%s/sentence0.jpg" % uid
+    img_path = "/mxtg/code/StackGAN/Data/flowers/example_captions_%s/sentence0.jpg" % uid
     img = os.path.join(base_path, img_path)
     with open(img, "rb") as f:
         response_data["data"] = base64.b64encode(f.read())
@@ -67,6 +64,6 @@ if __name__ == "__main__":
         print "model path is not set"
         sys.exit(1)
     else:
-        MODEL_PATH = args.model_path
+        MODEL_PATH = args.model_path + "/model.ckpt"
     cache.set("training", "false")
     app.run(host="0.0.0.0", port="80")

@@ -2,15 +2,18 @@ from gevent import monkey
 monkey.patch_all()
 import gevent
 import requests
-import random
+import base64
+import uuid
 
 
 def test():
     url = "http://127.0.0.1:80/model_app/stackgan/detect"
-    files = {'file': open("/mxtg/code/StackGAN/Data/flowers/examples_captions.txt", 'rb')}
+    files = {'file': open("/mxtg/code/StackGAN/Data/flowers/example_captions.txt", 'rb')}
     res = requests.post(url, files=files)
     data =  res.json()
-    print "%d:%s" %(random.randint(10), data)
+    img = base64.b64decode(data["data"])
+    with open("/stackgan_%s.jpg" % uuid.uuid1(), "wb") as f:
+        f.write(img)
 
 
 if __name__ == "__main__":

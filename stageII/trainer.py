@@ -508,10 +508,9 @@ class CondGANTrainer(object):
                         # save checkpoint
                         counter += 1
                         if counter % self.snapshot_interval == 0:
-                            snapshot_path = "%s/%s_%s.ckpt" %\
+                            snapshot_path = "%s/model/%s.ckpt" %\
                                              (self.checkpoint_dir,
-                                              self.exp_name,
-                                              str(counter))
+                                              self.exp_name)
                             fn = saver.save(sess, snapshot_path)
                             print("Model saved in file: %s" % fn)
 

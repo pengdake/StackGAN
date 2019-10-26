@@ -22,8 +22,6 @@ def parse_args():
     parser.add_argument('--gpu', dest='gpu_id',
                         help='GPU device id to use [0]',
                         default=-1, type=int)
-    parser.add_argument('--batch_size', dest='batch_size',
-                        default=64, type=int)
     parser.add_argument('--epoch', dest='epoch',
                         default=600, type=int)
     # if len(sys.argv) == 1:
@@ -40,7 +38,6 @@ if __name__ == "__main__":
         cfg.GPU_ID = args.gpu_id
 
     cfg.CONFIG_NAME = "stageI"
-    cfg.TRAIN.BATCH_SIZE = args.batch_size
     cfg.TRAIN.MAX_EPOCH = args.epoch
 
     print('Using config:')

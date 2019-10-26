@@ -27,8 +27,6 @@ def parse_args():
                         default='./ckt_logs/flowers/stageI/model_64000.ckpt', type=str)
     parser.add_argument('--pretrained_epoch', dest='pretrained_epoch',
                         default=600, type=int)
-    parser.add_argument('--batch_size', dest='batch_size',
-                        default=64, type=int)
     parser.add_argument('--epoch', dest='epoch',
                         default=1200, type=int)
     # if len(sys.argv) == 1:
@@ -48,7 +46,6 @@ if __name__ == "__main__":
     cfg.CONFIG_NAME = "stageII"
     cfg.TRAIN.PRETRAINED_MODEL = args.pretrained_model
     cfg.TRAIN.PRETRAINED_EPOCH = args.pretrained_epoch
-    cfg.TRAIN.BATCH_SIZE = args.batch_size
     cfg.TRAIN.MAX_EPOCH = args.epoch
     
     print('Using config:')

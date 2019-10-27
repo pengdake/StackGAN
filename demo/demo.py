@@ -6,10 +6,12 @@ import tensorflow as tf
 import numpy as np
 import scipy.misc
 import os
+import sys
 import argparse
 import torchfile
 from PIL import Image, ImageDraw, ImageFont
 import re
+sys.path.append(os.getcwd())
 
 from misc.config import cfg, cfg_from_file
 from misc.utils import mkdir_p

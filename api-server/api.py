@@ -43,7 +43,7 @@ def detect():
         cache.set("detecting", "false")
         return make_response(o, 400)
     # text to image
-    s, o = commands.getstatusoutput("python %s/demo/demo.py --model_path %s --uid %s" % (base_path, MODEL_PATH, uid))
+    s, o = commands.getstatusoutput("cd %s && python demo/demo.py --model_path %s --uid %s" % (base_path, MODEL_PATH, uid))
     cache.set("detecting", "false")
     if s != 0:
         return make_response(o, 400)

@@ -2,6 +2,7 @@
 # Extract text embeddings from the encoder
 #
 
+. /root/torch/install/bin/torch-activate
 FLOWER_ENCODER=lm_sje_flowers_c10_hybrid_0.00070_1_10_trainvalids.txt_iter16400.t7 \
 CAPTION_PATH=$1 \
 GPU=0 \

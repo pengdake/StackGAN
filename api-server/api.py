@@ -1,6 +1,5 @@
 import commands
 import uuid
-import json
 import os
 import argparse
 import sys
@@ -11,6 +10,7 @@ sys.path.append(os.getcwd())
 
 cache = SimpleCache()
 app = Flask(__name__)
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="stackgan detect api")
@@ -25,36 +25,33 @@ def parse_args():
 
 @app.route('/detect', methods=['POST'])
 def detect():
-    if cache.get("training") == "true":
-        return make_response("server is busy, train again later", 400)
-    cache.set("training", "true")
+    if cache.get("detecting") == "true":
+        return make_response("server is busy, try again later", 400)
+    cache.set("detecting", "true")
     uid = uuid.uuid1()
     # save file to Data/flowers/example_captions.txt
-    print "start save txt"
-    example_file = request.files["file"]
+    example_file = request.files.get("file")
+    if not example_file:
+        return make_response("Please provide file for detect", 400)
     base_path = os.path.abspath(os.getcwd())
     caption_path = "%s/Data/flowers/example_captions_%s.txt" % (base_path, uid)
     example_file.save(caption_path)
-    print "start txt transform"
     # transform  Data/flowers/example_captions.txt to Data/flowers/example_captions.t7
     s, o = commands.getstatusoutput("sh %s/demo/flowers_demo.sh %s" % (base_path, caption_path.split(".")[0]))
     if s != 0:
         # transfrom failed
+        cache.set("detecting", "false")
         return make_response(o, 400)
     # text to image
-    print "start create img"
     s, o = commands.getstatusoutput("python %s/demo/demo.py --model_path %s --uid %s" % (base_path, MODEL_PATH, uid))
+    cache.set("detecting", "false")
     if s != 0:
         return make_response(o, 400)
-    cache.set("training", "false")
     # transform img to base64 code
-    print "start img transform"
-    response_data = {}
-    response_data["type"] = "img"
+    response_data = {"type": "img"}
     img_path = "%s/Data/flowers/example_captions_%s/sentence0.jpg" % (base_path, uid)
     with open(img_path, "rb") as f:
         response_data["data"] = "data:image/jpg;base64,%s" % base64.b64encode(f.read())
-    # return base64 code
     return make_response(jsonify(response_data), 200)
     
 
@@ -65,5 +62,5 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         MODEL_PATH = args.model_path + "/model.ckpt"
-    cache.set("training", "false")
+    cache.set("detecting", "false")
     app.run(host="0.0.0.0", port="80")

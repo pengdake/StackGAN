@@ -52,7 +52,7 @@ def detect():
     response_data["type"] = "img"
     img_path = "/mxtg/code/StackGAN/Data/flowers/example_captions_%s/sentence0.jpg" % uid
     with open(img_path, "rb") as f:
-        response_data["data"] = base64.b64encode(f.read())
+        response_data["data"] = "data:image/jpg;base64,%s" % base64.b64encode(f.read())
     # return base64 code
     return make_response(jsonify(response_data), 200)
     

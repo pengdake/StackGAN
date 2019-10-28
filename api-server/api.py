@@ -53,6 +53,11 @@ def detect():
     img_path = "%s/Data/flowers/example_captions_%s/sentence0.jpg" % (base_path, uid)
     with open(img_path, "rb") as f:
         response_data["data"] = "data:image/jpg;base64,%s" % base64.b64encode(f.read())
+    rm_path = os.path.dirname(img_path)
+    os.remove(img_path)
+    os.remove(rm_path + ".t7")
+    os.remove(rm_path + ".txt")
+    os.rmdir(rm_path)
     return make_response(jsonify(response_data), 200)
     
 

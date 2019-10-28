@@ -32,6 +32,7 @@ def detect():
     # save file to Data/flowers/example_captions.txt
     example_file = request.files.get("file")
     if not example_file:
+        cache.set("detecting", "false")
         return make_response("Please provide file for detect", 400)
     base_path = os.path.abspath(os.getcwd())
     caption_path = "%s/Data/flowers/example_captions_%s.txt" % (base_path, uid)

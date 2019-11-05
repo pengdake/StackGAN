@@ -7,16 +7,14 @@ import uuid
 
 
 def test():
-    url = "http://127.0.0.1:80/model_app/stackgan/detect"
+    url = "http://127.0.0.1:80/detect"
     files = {'file': open("/mxtg/code/StackGAN/Data/flowers/example_captions.txt", 'rb')}
     res = requests.post(url, files=files)
     if res.status_code == 400:
         print res.text
         return
-    data =  res.json()
-    img = base64.b64decode(data["data"])
-    with open("/stackgan_%s.jpg" % uuid.uuid1(), "wb") as f:
-        f.write(img)
+    else:
+        print "Success"
 
 
 if __name__ == "__main__":

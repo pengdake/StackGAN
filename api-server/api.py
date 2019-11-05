@@ -23,7 +23,7 @@ def parse_args():
     return args
 
 
-@app.route('/model_app/stackgan/detect', methods=['POST'])
+@app.route('/detect', methods=['POST'])
 def detect():
     if cache.get("training") == "true":
         return make_response("server is busy, train again later", 400)
@@ -33,6 +33,7 @@ def detect():
     print "start save txt"
     example_file = request.files["file"]
     base_path = os.path.dirname(os.path.dirname(__file__))
+    base_path = os.path.abspath(os.getcwd())
     caption_path = "%s/Data/flowers/example_captions_%s.txt" % (base_path, uid)
     example_file.save(caption_path)
     print "start txt transform"

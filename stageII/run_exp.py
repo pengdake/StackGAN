@@ -17,18 +17,12 @@ from misc.config import cfg, cfg_from_file
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a GAN network')
-    parser.add_argument('--cfg', dest='cfg_file',
-                        help='optional config file',
-                        default=None, type=str)
-    parser.add_argument('--gpu', dest='gpu_id',
-                        help='GPU device id to use [0]',
-                        default=-1, type=int)
-    parser.add_argument('--pretrained_model', dest='pretrained_model',
-                        default='./ckt_logs/flowers/stageI/model_64000.ckpt', type=str)
     parser.add_argument('--pretrained_epoch', dest='pretrained_epoch',
                         default=600, type=int)
     parser.add_argument('--epoch', dest='epoch',
                         default=1200, type=int)
+    parser.add_argument('--batch_size', dest='batch_size', type=int)
+    parser.add_argument('--ckt_log_dir', dest='ckt_log_dir', type=str)
     # if len(sys.argv) == 1:
     #    parser.print_help()
     #    sys.exit(1)
@@ -38,15 +32,11 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    if args.cfg_file is not None:
-        cfg_from_file(args.cfg_file)
-    if args.gpu_id != -1:
-        cfg.GPU_ID = args.gpu_id
+    cfg_from_file("stageII/cfg/flowers.yml")
 
-    cfg.CONFIG_NAME = "stageII"
-    cfg.TRAIN.PRETRAINED_MODEL = args.pretrained_model
     cfg.TRAIN.PRETRAINED_EPOCH = args.pretrained_epoch
     cfg.TRAIN.MAX_EPOCH = args.epoch
+    cfg.TRAIN.BATCH_SIZE = args.batch_size
     
     print('Using config:')
     pprint.pprint(cfg)
@@ -61,8 +51,7 @@ if __name__ == "__main__":
     if cfg.TRAIN.FLAG:
         filename_train = '%s/train' % (datadir)
         dataset.train = dataset.get_data(filename_train)
-        ckt_logs_dir = "ckt_logs/%s/%s" % \
-            (cfg.DATASET_NAME, cfg.CONFIG_NAME)
+        ckt_logs_dir = args.ckt_log_dir
         mkdir_p(ckt_logs_dir)
         models_dir = "models/%s/%s" % \
             (cfg.DATASET_NAME, cfg.CONFIG_NAME)

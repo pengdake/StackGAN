@@ -16,14 +16,11 @@ from misc.config import cfg, cfg_from_file
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a GAN network')
-    parser.add_argument('--cfg', dest='cfg_file',
-                        help='optional config file',
-                        default=None, type=str)
-    parser.add_argument('--gpu', dest='gpu_id',
-                        help='GPU device id to use [0]',
-                        default=-1, type=int)
     parser.add_argument('--epoch', dest='epoch',
                         default=600, type=int)
+    parser.add_argument('--batch_size', dest='batch_size',
+                        default=64, type=int)
+    parser.add_argument('--dataset_dir', dest='dataset_dir', type=str)
     # if len(sys.argv) == 1:
     #    parser.print_help()
     #    sys.exit(1)
@@ -32,13 +29,10 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    if args.cfg_file is not None:
-        cfg_from_file(args.cfg_file)
-    if args.gpu_id != -1:
-        cfg.GPU_ID = args.gpu_id
+    cfg_from_file("stageI/cfg/flowers.yml")
 
-    cfg.CONFIG_NAME = "stageI"
     cfg.TRAIN.MAX_EPOCH = args.epoch
+    cfg.TRAIN.BATCH_SIZE = args.batch_size
 
     print('Using config:')
     pprint.pprint(cfg)
@@ -46,7 +40,7 @@ if __name__ == "__main__":
     ## now = datetime.datetime.now(dateutil.tz.tzlocal())
     ## timestamp = now.strftime('%Y_%m_%d_%H_%M_%S')
 
-    datadir = 'Data/%s' % cfg.DATASET_NAME
+    datadir = args.dataset_dir
     dataset = TextDataset(datadir, cfg.EMBEDDING_TYPE, 1)
     filename_test = '%s/test' % (datadir)
     dataset.test = dataset.get_data(filename_test)

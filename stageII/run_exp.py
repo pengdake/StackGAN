@@ -22,7 +22,8 @@ def parse_args():
     parser.add_argument('--epoch', dest='epoch',
                         default=1200, type=int)
     parser.add_argument('--batch_size', dest='batch_size', type=int)
-    parser.add_argument('--ckt_log_dir', dest='ckt_log_dir', type=str)
+    parser.add_argument('--model_dir', dest='model_dir', type=str)
+    parser.add_argument('--dataset_dir', dest='dataset_dir', type=str)
     # if len(sys.argv) == 1:
     #    parser.print_help()
     #    sys.exit(1)
@@ -44,17 +45,17 @@ if __name__ == "__main__":
     # now = datetime.datetime.now(dateutil.tz.tzlocal())
     # timestamp = now.strftime('%Y_%m_%d_%H_%M_%S')
 
-    datadir = 'Data/%s' % cfg.DATASET_NAME
+    datadir = args.dataset_dir
     dataset = TextDataset(datadir,  cfg.EMBEDDING_TYPE, 4)
     filename_test = '%s/test' % (datadir)
     dataset.test = dataset.get_data(filename_test)
     if cfg.TRAIN.FLAG:
         filename_train = '%s/train' % (datadir)
         dataset.train = dataset.get_data(filename_train)
-        ckt_logs_dir = args.ckt_log_dir
-        mkdir_p(ckt_logs_dir)
-        models_dir = "models/%s/%s" % \
+        ckt_logs_dir = "ckt_logs/%s/%s" % \
             (cfg.DATASET_NAME, cfg.CONFIG_NAME)
+        mkdir_p(ckt_logs_dir)
+        models_dir = args.model_dir
         mkdir_p(models_dir)
     else:
         s_tmp = cfg.TRAIN.PRETRAINED_MODEL

@@ -393,10 +393,7 @@ class CondGANTrainer(object):
             saver = tf.train.Saver(restore_vars)
             saver.restore(sess, self.model_path)
 
-            istart = self.model_path.rfind('_') + 1
-            iend = self.model_path.rfind('.')
-            counter = self.model_path[istart:iend]
-            counter = int(counter)
+            counter = 0
         else:
             print("Created model with fresh parameters.")
             counter = 0

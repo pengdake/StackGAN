@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 import numpy as np
 import os
 import sys
+sys.path.append(os.getcwd())
 import pickle
 from misc.utils import get_image
 import scipy.misc

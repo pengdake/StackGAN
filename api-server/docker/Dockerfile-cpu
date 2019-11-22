@@ -1,0 +1,11 @@
+FROM tensorflow/tensorflow:0.12.1
+
+WORKDIR /root
+
+RUN apt-get update
+RUN apt-get install -y git wget ttf-freefont tmux
+
+ENV PYTHONPATH /root/StackGAN
+
+RUN pip install prettytensor==0.7.3 progressbar python-dateutil easydict pandas torchfile pillow pyyaml ipdb numpy==1.11.3
+

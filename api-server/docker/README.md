@@ -1,4 +1,5 @@
-# 启动
-python api-server/api.py --model_path
-# 启动参数
-model_path: 用于推理的模型存储路径
+# Dockerfile-cpu
+基于cpu的容器镜像，可用于模型训练
+
+# Dockerfile-gpu
+基于gpu的容器镜像，可用于模型训练和模型推理
